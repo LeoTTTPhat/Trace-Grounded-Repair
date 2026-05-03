@@ -290,6 +290,15 @@ agent. The agent's edits are applied to the \emph{original} (un-annotated)
 source, and tests are re-run normally. The tracer is invoked again only if
 the agent's first patch fails.
 
+\paragraph{Artifact smoke test.} We have implemented the Phase-0 version
+of this pipeline and executed it on the \verb|rolling_max| motivating
+example. The run deliberately preserves the bug, records the failing
+behavior, and emits the line-aligned digest used by the rest of the
+artifact. Table~\ref{tab:smoketest} records the current reproducibility
+result.
+
+\input{results}
+
 %% --- 4. Pilot ------------------------------------------------------------
 \section{Pilot Study}
 \label{sec:pilot}

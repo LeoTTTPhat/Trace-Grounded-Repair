@@ -1,0 +1,18 @@
+{
+  "target": "/Users/phatttt/Documents/Claude/Projects/ASE/Trace-Grounded-Repair/tgr/harness/toy_bug.py",
+  "input": {
+    "xs": [
+      1,
+      5,
+      3,
+      2,
+      8
+    ],
+    "k": 3
+  },
+  "expected": [
+    5,
+    5,
+    8
+  ]
+}
