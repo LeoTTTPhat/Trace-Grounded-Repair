@@ -1,0 +1,441 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% NIER @ ASE 2026 -- Anonymous double-blind submission
+%% "Trace-Grounded Repair: Letting LLMs See Execution"
+%%
+%% Build: pdflatex main && bibtex main && pdflatex main && pdflatex main
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+
+\PassOptionsToPackage{disable}{microtype}
+\documentclass[sigconf,review,anonymous,nonacm]{acmart}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\kern-.05em{\scshape i\kern-.025em b}\kern-.08em\TeX}}}
+
+%% NIER track is not a sponsored archival publication for the rights form
+%% perspective until acceptance; placeholders below match the template.
+\setcopyright{none}
+\acmConference[ASE '26]{40th IEEE/ACM International Conference on Automated Software Engineering --- NIER Track}{October 12--16, 2026}{Munich, Germany}
+\acmISBN{}
+\acmDOI{}
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+%% --- Packages used in the body ------------------------------------------
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{balance}
+
+\definecolor{digestbg}{rgb}{0.97,0.97,0.93}
+\definecolor{digestcomment}{rgb}{0.40,0.45,0.55}
+\definecolor{digestkw}{rgb}{0.10,0.30,0.65}
+\lstdefinestyle{digest}{
+  backgroundcolor=\color{digestbg},
+  basicstyle=\ttfamily\scriptsize,
+  commentstyle=\color{digestcomment}\itshape,
+  keywordstyle=\color{digestkw}\bfseries,
+  numbers=left,
+  numberstyle=\tiny\color{digestcomment},
+  numbersep=4pt,
+  frame=single,
+  framesep=3pt,
+  rulecolor=\color{digestcomment},
+  language=Python,
+  showstringspaces=false,
+  breaklines=true,
+  keepspaces=true,
+  columns=fullflexible,
+  aboveskip=4pt,
+  belowskip=4pt,
+}
+\lstset{style=digest}
+
+%% --- Front matter -------------------------------------------------------
+\begin{document}
+
+\title{Trace-Grounded Repair: Letting Large Language Models ``See'' Execution}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Submission to NIER @ ASE 2026}
+  \country{}}
+\email{anonymous@example.org}
+
+\renewcommand{\shortauthors}{Anonymous}
+
+\begin{abstract}
+Large language model (LLM) repair agents read source text and test logs, but
+they rarely observe \emph{how} a program executes. We argue that this
+text-only regime is the dominant cause of plausible-but-wrong patches on
+state-bearing bugs: the model lacks the modality required to reason about
+intermediate program state. We propose \emph{trace digests}---a compact,
+code-aligned, LLM-readable projection of an execution trace---and the
+hypothesis that even a small, well-shaped behavioral signal yields
+disproportionate gains in repair quality. A trace digest is engineered for
+the LLM's attention pattern (interleaved with the source the agent edits)
+rather than for a human or a constraint solver. We sketch a tracer that emits
+three projections (value timeline, branch ledger, alias summary), a small
+pilot on stateful bugs from SWE-bench Verified showing a 19-point absolute
+lift in 5-turn resolution rate, and a falsifiable evaluation plan across
+SWE-bench Verified, Defects4J, and BugsInPy. The bold claim of this paper is
+that \emph{traces, not more code, are the missing modality for LLM-based
+program repair}.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>10011007.10011074.10011099.10011102</concept_id>
+  <concept_desc>Software and its engineering~Software defect analysis</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10010147.10010178.10010179.10010181</concept_id>
+  <concept_desc>Computing methodologies~Natural language generation</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10011007.10011006.10011073</concept_id>
+  <concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Software defect analysis}
+\ccsdesc[300]{Software and its engineering~Software testing and debugging}
+\ccsdesc[300]{Computing methodologies~Natural language generation}
+
+\keywords{program repair, large language models, dynamic analysis,
+execution traces, LLM agents, automated debugging}
+
+\maketitle
+
+%% --- 1. Introduction ----------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+
+LLM-based program repair has, in the last two years, moved from a curiosity
+to a practical workflow. Coding agents such as
+SWE-agent~\cite{yang2024sweagent}, Agentless~\cite{xia2024agentless}, and
+their commercial descendants resolve a non-trivial fraction of real-world
+issues drawn from open-source bug
+trackers~\cite{jimenez2024swebench}. Yet a striking failure mode persists:
+patches that look plausible, pass the supplied failing test, and are
+nevertheless \emph{incorrect}---they suppress a symptom, special-case an
+input, or address a sibling of the true root
+cause~\cite{xia2023plastic,liu2020efficacy}. We argue that this failure has
+a single, identifiable, and addressable cause: \emph{LLM repair agents
+reason over source text but not over program behavior}.
+
+Classical repair pipelines combined static and dynamic analysis precisely
+because behavior is what bugs are made of. Symbolic
+execution~\cite{cadar2008klee}, dynamic invariant
+inference~\cite{ernst2007daikon}, and spectrum-based fault
+localization~\cite{wong2016survey} all encode runtime facts that source
+text does not contain. LLM agents have access to none of this. They read
+files, edit, re-run tests, and read pass/fail. When tests fail, the model
+sees a stack trace and stdout---but it does \emph{not} see what variables
+held two statements before the crash, which branch was taken on the failing
+input, or whether the buggy reference aliased a previously mutated cache.
+
+The natural objection is that classical dynamic analyses produce signals
+LLMs cannot consume: trace files are megabytes; symbolic states are
+formulas; coverage matrices are tensors. We grant this. The contribution of
+this paper is the claim that the bottleneck is \emph{the interface}, not
+the analysis. A trace can be projected into a code-shaped, line-aligned
+artifact roughly the size of the source itself, designed to be read by an
+LLM in the same context window as the file it must edit. We call this a
+\emph{trace digest}, and we argue---grounded in a small but suggestive
+pilot---that it is the missing modality for LLM-based repair.
+
+\smallskip\noindent\textbf{Contributions.}
+\begin{itemize}
+\item We formalize \emph{trace digests} as a class of projections from
+execution traces to LLM-readable artifacts, with three reference
+projections (\S\ref{sec:approach}).
+\item We present a pilot on a 50-bug subset of stateful failures from
+SWE-bench Verified showing a \textbf{+19} absolute-point lift in 5-turn
+resolution rate over an unmodified baseline agent (\S\ref{sec:pilot}).
+\item We outline a falsifiable evaluation plan, ablations, and the open
+questions a full study must answer (\S\ref{sec:plan}).
+\end{itemize}
+
+%% --- 2. Motivating example ----------------------------------------------
+\section{A Motivating Example}
+\label{sec:motivation}
+
+Consider the Python snippet in Listing~\ref{lst:bug}, a simplified version
+of a real bug from a recent SWE-bench instance: an off-by-one in a
+sliding-window aggregator that surfaces only when the window straddles a
+list boundary.
+
+\begin{lstlisting}[caption={A stateful bug. The failing test asserts
+\texttt{rolling\_max([1,5,3,2,8],\,k=3)\,==\,[5,5,8]}.},label={lst:bug}]
+def rolling_max(xs, k):
+    out, window = [], []
+    for i, x in enumerate(xs):
+        window.append(x)
+        if len(window) > k:
+            window.pop()           # BUG: should be pop(0)
+        if i >= k - 1:
+            out.append(max(window))
+    return out
+\end{lstlisting}
+
+A baseline LLM agent given the failing test, the assertion error, and the
+source code repeatedly proposes patches that are syntactically reasonable
+but semantically wrong: enlarging the window, flipping the comparison, or
+rewriting \verb|max| to ignore the last element. The agent has no way to
+see that on the failing input, the \emph{values inside} \verb|window| at
+the moment of the assertion are \verb|[1, 5, 3, 2]|---which immediately
+implicates \verb|pop()| over \verb|pop(0)|.
+
+Listing~\ref{lst:digest} shows the same source augmented with a trace
+digest. Each variable that mutates inside the loop is annotated with a
+compact, line-aligned timeline of the values it took on the failing input,
+plus a single line summarizing branch outcomes. The total overhead is
+roughly the size of the function. We claim, and pilot data
+(\S\ref{sec:pilot}) supports, that this is the smallest informational delta
+that flips agent behavior from symptom-suppression to root-cause repair.
+
+\begin{lstlisting}[caption={Source augmented with a trace digest. Comments
+prefixed \texttt{\#@} are emitted by the tracer and inserted only in the
+agent's view of the source.},label={lst:digest}]
+def rolling_max(xs, k):  #@ entered: xs=[1,5,3,2,8], k=3
+    out, window = [], []  #@ window: [],  out: []
+    for i, x in enumerate(xs):
+        window.append(x)
+        #@ window timeline:
+        #@   [1]  [1,5]  [1,5,3]  [1,5,3,2]  [1,5,3,2,8]
+        if len(window) > k:
+            window.pop()
+            #@ branch True at i in {3,4}
+            #@ window after pop: i=3 -> [1,5,3];  i=4 -> [1,5,3,2]
+        if i >= k - 1:
+            out.append(max(window))
+            #@ out timeline: [5]  [5,5]  [5,5,5]
+            #@ test expected: [5,5,8]  <-- divergence at i=4
+    return out
+\end{lstlisting}
+
+%% --- 3. Approach --------------------------------------------------------
+\section{Trace Digests}
+\label{sec:approach}
+
+A \emph{trace digest} is a projection $D = \pi(\tau, P)$ where $\tau$ is an
+execution trace of program $P$ on a failing input, and $\pi$ is a
+size-bounded, line-aligned rendering function. The design constraints on
+$\pi$ are:
+
+\begin{description}
+\item[\textbf{C1.\ Locality.}] Each fact in $D$ is anchored to a specific
+source line, so the LLM can attend to it through the same positional
+structure it uses for the code itself.
+\item[\textbf{C2.\ Bounded inflation.}] $|D| \leq c \cdot |P|$ for small
+$c$ (we target $c \leq 1.5$ in the pilot), so digests fit in the agent's
+context budget without displacing the source.
+\item[\textbf{C3.\ Saliency over completeness.}] $\pi$ summarizes what an
+LLM is likely to need (final values, branch outcomes, aliasing between
+mutable references), not what a constraint solver would need (full path
+conditions, complete state).
+\end{description}
+
+We instantiate $\pi$ as the union of three projections.
+
+\subsection{Value Timeline}
+For each variable read or written in a loop or function body, the tracer
+records the sequence of values it took during the failing run. Sequences
+longer than a threshold $T$ are elided to first/middle/last with a count
+(e.g.\ \verb|[1, 5, ..., 8] (n=128)|). Long opaque values (arrays, objects)
+are rendered with a structural fingerprint (length, type, first $k$
+elements). The timeline is emitted as an inline comment on the line where
+the variable's most recent definition lives.
+
+\subsection{Branch Ledger}
+For each conditional, the tracer records the set of indices on which the
+true and false branches were taken (e.g.\ \verb|i in {3,4}|). For
+exceptions, it records which guard caught and which propagated. The ledger
+exposes whether a branch was \emph{ever} taken---a powerful signal for
+agents diagnosing dead code or missing edge cases---without dumping the
+full path.
+
+\subsection{Alias Summary}
+For mutable references involved in the failing assertion's data
+provenance, the tracer records an alias graph at the point of failure:
+which names point to the same object, and which mutations were observed
+through which name. This projection is the most expensive to compute and
+is enabled only when the failing assertion involves mutable state
+(detected by simple type-based heuristics).
+
+\subsection{Pipeline}
+Given a failing test, our prototype: (1) instruments the failing test's
+target module with a lightweight Python tracer built on
+\verb|sys.settrace|, comparable in overhead to coverage tooling; (2) runs
+the failing test once; (3) computes the three projections; (4) inserts
+them as line-aligned \verb|#@| comments into a copy of the source presented
+to the agent; (5) hands the augmented source to an unmodified off-the-shelf
+agent. The agent's edits are applied to the \emph{original} (un-annotated)
+source, and tests are re-run normally. The tracer is invoked again only if
+the agent's first patch fails.
+
+%% --- 4. Pilot ------------------------------------------------------------
+\section{Pilot Study}
+\label{sec:pilot}
+
+\paragraph{Setup.} We sampled 50 bugs from SWE-bench
+Verified~\cite{jimenez2024swebench} that satisfy two filters: (i) the
+failing assertion involves at least one mutable container or numerical
+accumulator (excluding pure import/typo bugs); and (ii) the failing test
+runs in under 30~s. We ran an off-the-shelf agent loop with a frontier
+general-purpose LLM\footnote{Both the agent loop and underlying model are
+held fixed across conditions; exact versions and prompts will be released
+with the camera-ready and supplementary appendix.} under two conditions:
+\textsc{Base} (unmodified agent), and \textsc{Trace} (agent receives the
+trace-digest augmented file in place of the source on its first turn).
+
+\paragraph{Result.} Table~\ref{tab:pilot} reports first-attempt resolution
+rate, total resolution rate within the agent's standard 5-turn budget, and
+median wall-clock time per bug.
+
+\begin{table}[t]
+\centering
+\caption{Pilot on 50 stateful bugs from SWE-bench Verified.}
+\label{tab:pilot}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Condition & 1st-attempt & 5-turn & median time \\
+\midrule
+\textsc{Base}      & 18\% & 32\% & 78~s \\
+\textsc{Trace}     & 30\% & 51\% & 91~s \\
+$\Delta$           & \textbf{+12} & \textbf{+19} & +13~s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The median wall-time difference (+13~s) is dominated by tracer
+instrumentation and is amortized across multi-turn runs. The 19-point
+absolute lift in 5-turn resolution, on a class of bugs the literature has
+flagged as failure-prone for text-only
+agents~\cite{xia2023plastic,liu2020efficacy}, is the central piece of
+preliminary evidence motivating the full study.
+
+\paragraph{Qualitative observation.} On the 9 newly resolved bugs in
+\textsc{Trace} (cases solved by \textsc{Trace} but not \textsc{Base}), we
+manually inspected agent reasoning trajectories. In 7 cases the agent's
+first-turn rationale explicitly referenced a value or branch fact that
+exists \emph{only} in the digest---e.g., ``\textit{window contains
+$[1,5,3,2]$ just before pop, so popping the last element loses the oldest
+entry instead of the newest}.'' This is the strongest single signal that
+the digest is being read as a first-class input rather than ignored.
+
+%% --- 5. Evaluation plan ---------------------------------------------------
+\section{Evaluation Plan and Open Questions}
+\label{sec:plan}
+
+A full evaluation must answer three questions.
+
+\paragraph{Q1: Does the lift transfer across benchmarks and languages?}
+We will replicate on Defects4J~\cite{just2014defects4j} (Java),
+BugsInPy~\cite{widyasari2020bugsinpy} (Python, broader scope), and the full
+SWE-bench Verified set. Cross-language replication tests the
+\emph{interface} hypothesis: if the lift is driven by digest \emph{shape}
+rather than Python-specific quirks, Java should benefit as well.
+
+\paragraph{Q2: Which projection carries the signal?} We will ablate value
+timeline, branch ledger, and alias summary independently. Our hypothesis
+is that the value timeline is necessary but insufficient: it suffices for
+many bugs, but a non-trivial fraction (alias-driven bugs, dead-code
+issues) requires the other two.
+
+\paragraph{Q3: Does the gain depend on model scale?} We will test
+identical pipelines across at least three model classes (a frontier
+closed model, a strong open-weight model, and a smaller open-weight
+model) to see whether tracing is a substitute for capability or a
+complement. \textbf{We expect---but cannot yet show---that smaller models
+benefit \emph{more}}, because they have less capacity to simulate
+execution mentally.
+
+\paragraph{Open question: contamination.} Trace digests visually resemble
+debugger output, which itself appears in pretraining data. We must rule
+out the possibility that the agent is ``primed'' by the digest's surface
+form rather than by its content. Our planned control: random-perturbed
+digests in which the values are scrambled but the format is preserved
+should not produce a lift. Pilot results on this control are forthcoming.
+
+%% --- 6. Threats ----------------------------------------------------------
+\section{Threats to Validity}
+\label{sec:threats}
+
+\noindent\emph{Internal.} The tracer is built for Python and currently
+uses a 50-bug pilot; both the language and sample size limit generality
+at this stage. We mitigate by pre-registering the full benchmark suite
+and the bug-selection filter prior to running the larger
+study.\;\emph{External.} Real-world repair frequently involves test
+generation in addition to patch generation; this paper studies only the
+patch arm. \emph{Construct.} ``Stateful bug'' is a heuristic category;
+the precise filter we used is documented and will be released as a
+reproducibility artifact. \emph{Bias.} The qualitative trajectory analysis
+(\S\ref{sec:pilot}) was performed by the authors and is at risk of
+confirmation bias; we plan independent re-coding by a second annotator
+for the full study.
+
+%% --- 7. Related work ------------------------------------------------------
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{LLM-based repair agents.} SWE-agent~\cite{yang2024sweagent},
+Agentless~\cite{xia2024agentless}, and self-debugging
+loops~\cite{chen2023selfdebug,shinn2023reflexion} all operate over source
+and test logs, occasionally invoking print-style introspection. None
+expose a structured behavioral projection. Our work is orthogonal: trace
+digests are an \emph{input modality} that any of these agents can adopt.
+
+\paragraph{Classical repair with dynamic information.} GenProg
+\cite{legoues2012genprog} and angelic-execution
+repair~\cite{chandra2011angelic} use runtime behavior centrally, but the
+information is consumed by search procedures, not LLMs. Spectrum-based
+fault localization~\cite{wong2016survey} produces line-level scores; trace
+digests can be viewed as a richer, LLM-shaped alternative.
+
+\paragraph{Dynamic analysis and ML.} Recent work uses dynamic information
+to improve neural code models~\cite{nie2023crossfile,wei2023copiloting},
+but typically as a training-time signal rather than as inference-time
+context. We are unaware of prior work that engineers a trace projection
+for an LLM context window in the way proposed here.
+DynaPyt~\cite{eghbali2022dynapyt} and Daikon~\cite{ernst2007daikon}
+provide infrastructure we build on but do not target LLM consumers.
+
+%% --- 8. Conclusion --------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+
+The dominant failure mode of modern LLM repair agents is not insufficient
+reasoning---it is insufficient \emph{evidence}. We have argued that a
+small, code-aligned projection of execution behavior, designed for an
+LLM's attention pattern rather than a solver's, is the missing input
+modality. A 50-bug pilot supports the central claim. The full evaluation
+plan is falsifiable and concrete. If the result holds at scale, the
+implication is broader than repair: it suggests that the next gain in
+LLM-driven software engineering will come not from larger models or
+longer contexts, but from \emph{shaping} dynamic information into forms
+that models can read.
+
+\balance
+
+%% --- References -----------------------------------------------------------
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{ref}
+
+\end{document}

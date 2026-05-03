@@ -1,0 +1,258 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{17}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Cadar et~al\mbox{.}(2008)]%
+        {cadar2008klee}
+\bibfield{author}{\bibinfo{person}{Cristian Cadar}, \bibinfo{person}{Daniel
+  Dunbar}, {and} \bibinfo{person}{Dawson~R. Engler}.}
+  \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{{KLEE}: Unassisted and Automatic Generation of
+  High-Coverage Tests for Complex Systems Programs}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 8th {USENIX} Conference on
+  Operating Systems Design and Implementation (OSDI)}}.
+  \bibinfo{pages}{209--224}.
+\newblock
+
+
+\bibitem[Chandra et~al\mbox{.}(2011)]%
+        {chandra2011angelic}
+\bibfield{author}{\bibinfo{person}{Satish Chandra}, \bibinfo{person}{Emina
+  Torlak}, \bibinfo{person}{Shaon Barman}, {and} \bibinfo{person}{Rastislav
+  Bod{\'\i}k}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Angelic Debugging}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 33rd International Conference on
+  Software Engineering (ICSE)}}. \bibinfo{pages}{121--130}.
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {chen2023selfdebug}
+\bibfield{author}{\bibinfo{person}{Xinyun Chen}, \bibinfo{person}{Maxwell Lin},
+  \bibinfo{person}{Nathanael Sch{\"a}rli}, {and} \bibinfo{person}{Denny Zhou}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Teaching Large Language Models to Self-Debug}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2304.05128}.
+
+
+\bibitem[Eghbali and Pradel(2022)]%
+        {eghbali2022dynapyt}
+\bibfield{author}{\bibinfo{person}{Aryaz Eghbali} {and}
+  \bibinfo{person}{Michael Pradel}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{{DynaPyt}: A Dynamic Analysis Framework for
+  {Python}}. In \bibinfo{booktitle}{\emph{Proceedings of the 30th ACM Joint
+  European Software Engineering Conference and Symposium on the Foundations of
+  Software Engineering (ESEC/FSE)}}. \bibinfo{pages}{760--771}.
+\newblock
+
+
+\bibitem[Ernst et~al\mbox{.}(2007)]%
+        {ernst2007daikon}
+\bibfield{author}{\bibinfo{person}{Michael~D. Ernst}, \bibinfo{person}{Jeff~H.
+  Perkins}, \bibinfo{person}{Philip~J. Guo}, \bibinfo{person}{Stephen
+  McCamant}, \bibinfo{person}{Carlos Pacheco}, \bibinfo{person}{Matthew~S.
+  Tschantz}, {and} \bibinfo{person}{Chen Xiao}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{The {Daikon} System for Dynamic Detection of Likely
+  Invariants}.
+\newblock \bibinfo{journal}{\emph{Science of Computer Programming}}
+  \bibinfo{volume}{69}, \bibinfo{number}{1--3} (\bibinfo{year}{2007}),
+  \bibinfo{pages}{35--45}.
+\newblock
+
+
+\bibitem[Goues et~al\mbox{.}(2012)]%
+        {legoues2012genprog}
+\bibfield{author}{\bibinfo{person}{Claire~Le Goues}, \bibinfo{person}{ThanhVu
+  Nguyen}, \bibinfo{person}{Stephanie Forrest}, {and} \bibinfo{person}{Westley
+  Weimer}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{{GenProg}: A Generic Method for Automatic Software
+  Repair}. In \bibinfo{booktitle}{\emph{IEEE Transactions on Software
+  Engineering}}, Vol.~\bibinfo{volume}{38}. \bibinfo{pages}{54--72}.
+\newblock
+
+
+\bibitem[Jimenez et~al\mbox{.}(2024)]%
+        {jimenez2024swebench}
+\bibfield{author}{\bibinfo{person}{Carlos~E. Jimenez}, \bibinfo{person}{John
+  Yang}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Shunyu Yao},
+  \bibinfo{person}{Kexin Pei}, \bibinfo{person}{Ofir Press}, {and}
+  \bibinfo{person}{Karthik Narasimhan}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-bench}: Can Language Models Resolve Real-World
+  {GitHub} Issues?}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations (ICLR)}}.
+\newblock
+
+
+\bibitem[Just et~al\mbox{.}(2014)]%
+        {just2014defects4j}
+\bibfield{author}{\bibinfo{person}{Ren{\'e} Just}, \bibinfo{person}{Darioush
+  Jalali}, {and} \bibinfo{person}{Michael~D. Ernst}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{{Defects4J}: A Database of Existing Faults to
+  Enable Controlled Testing Studies for {Java} Programs}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the International Symposium on
+  Software Testing and Analysis (ISSTA)}} (\bibinfo{year}{2014}),
+  \bibinfo{pages}{437--440}.
+\newblock
+
+
+\bibitem[Liu et~al\mbox{.}(2020)]%
+        {liu2020efficacy}
+\bibfield{author}{\bibinfo{person}{Kui Liu}, \bibinfo{person}{Shangwen Wang},
+  \bibinfo{person}{Anil Koyuncu}, \bibinfo{person}{Kisub Kim},
+  \bibinfo{person}{Tegawend{\'e}~F. Bissyand{\'e}}, \bibinfo{person}{Dongsun
+  Kim}, \bibinfo{person}{Peng Wu}, \bibinfo{person}{Jacques Klein},
+  \bibinfo{person}{Xiaoguang Mao}, {and} \bibinfo{person}{Yves~Le Traon}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{On the Efficacy of Test-Suite-Based Program Repair:
+  A Systematic Assessment of 16 Automated Repair Systems for {Java} Programs}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the ACM/IEEE 42nd International
+  Conference on Software Engineering (ICSE)}}. \bibinfo{pages}{615--627}.
+\newblock
+
+
+\bibitem[Nie et~al\mbox{.}(2023)]%
+        {nie2023crossfile}
+\bibfield{author}{\bibinfo{person}{Pengyu Nie}, \bibinfo{person}{Rahul
+  Banerjee}, \bibinfo{person}{Junyi~Jessy Li}, \bibinfo{person}{Raymond~J.
+  Mooney}, {and} \bibinfo{person}{Milos Gligoric}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Learning Deep Semantics for Test Completion}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 45th International Conference on
+  Software Engineering (ICSE)}}.
+\newblock
+
+
+\bibitem[Shinn et~al\mbox{.}(2023)]%
+        {shinn2023reflexion}
+\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
+  Cassano}, \bibinfo{person}{Edward Berman}, \bibinfo{person}{Ashwin Gopinath},
+  \bibinfo{person}{Karthik Narasimhan}, {and} \bibinfo{person}{Shunyu Yao}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Reflexion: Language Agents with Verbal
+  Reinforcement Learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems (NeurIPS)}}.
+\newblock
+
+
+\bibitem[Wei et~al\mbox{.}(2023)]%
+        {wei2023copiloting}
+\bibfield{author}{\bibinfo{person}{Yuxiang Wei},
+  \bibinfo{person}{Chunqiu~Steven Xia}, {and} \bibinfo{person}{Lingming
+  Zhang}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Copiloting the Copilots: Fusing Large Language
+  Models with Completion Engines for Automated Program Repair}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 31st ACM Joint European Software
+  Engineering Conference and Symposium on the Foundations of Software
+  Engineering (ESEC/FSE)}}.
+\newblock
+
+
+\bibitem[Widyasari et~al\mbox{.}(2020)]%
+        {widyasari2020bugsinpy}
+\bibfield{author}{\bibinfo{person}{Ratnadira Widyasari},
+  \bibinfo{person}{Sheng~Qin Sim}, \bibinfo{person}{Camellia Lok},
+  \bibinfo{person}{Haodi Qi}, \bibinfo{person}{Jack Phan},
+  \bibinfo{person}{Qijin Tay}, \bibinfo{person}{Constance Tan},
+  \bibinfo{person}{Fiona Wee}, \bibinfo{person}{Jodie~Ethelda Tan},
+  \bibinfo{person}{Yuheng Yieh}, \bibinfo{person}{Brian Goh},
+  \bibinfo{person}{Ferdian Thung}, \bibinfo{person}{Hong~Jin Kang},
+  \bibinfo{person}{Thong Hoang}, \bibinfo{person}{David Lo}, {and}
+  \bibinfo{person}{Eng~Lieh Ouh}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{{BugsInPy}: A Database of Existing Bugs in {Python}
+  Programs to Enable Controlled Testing and Debugging Studies}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 28th ACM Joint Meeting on
+  European Software Engineering Conference and Symposium on the Foundations of
+  Software Engineering (ESEC/FSE)}}. \bibinfo{pages}{1556--1560}.
+\newblock
+
+
+\bibitem[Wong et~al\mbox{.}(2016)]%
+        {wong2016survey}
+\bibfield{author}{\bibinfo{person}{W.~Eric Wong}, \bibinfo{person}{Ruizhi Gao},
+  \bibinfo{person}{Yihao Li}, \bibinfo{person}{Rui Abreu}, {and}
+  \bibinfo{person}{Franz Wotawa}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{A Survey on Software Fault Localization}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering}}
+  \bibinfo{volume}{42}, \bibinfo{number}{8} (\bibinfo{year}{2016}),
+  \bibinfo{pages}{707--740}.
+\newblock
+
+
+\bibitem[Xia et~al\mbox{.}(2025)]%
+        {xia2024agentless}
+\bibfield{author}{\bibinfo{person}{Chunqiu~Steven Xia}, \bibinfo{person}{Yinlin
+  Deng}, \bibinfo{person}{Soren Dunn}, {and} \bibinfo{person}{Lingming Zhang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Agentless: Demystifying {LLM-based} Software
+  Engineering Agents}. In \bibinfo{booktitle}{\emph{Proceedings of the ACM on
+  Programming Languages (OOPSLA)}}.
+\newblock
+\newblock
+\shownote{arXiv:2407.01489}.
+
+
+\bibitem[Xia and Zhang(2023)]%
+        {xia2023plastic}
+\bibfield{author}{\bibinfo{person}{Chunqiu~Steven Xia} {and}
+  \bibinfo{person}{Lingming Zhang}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Plastic Surgery for {LLMs}: Practical Patch
+  Synthesis with Large Language Models}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 31st ACM Joint European Software
+  Engineering Conference and Symposium on the Foundations of Software
+  Engineering (ESEC/FSE)}}.
+\newblock
+
+
+\bibitem[Yang et~al\mbox{.}(2024)]%
+        {yang2024sweagent}
+\bibfield{author}{\bibinfo{person}{John Yang}, \bibinfo{person}{Carlos~E.
+  Jimenez}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Kilian
+  Lieret}, \bibinfo{person}{Shunyu Yao}, \bibinfo{person}{Karthik Narasimhan},
+  {and} \bibinfo{person}{Ofir Press}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-agent}: Agent-Computer Interfaces Enable
+  Automated Software Engineering}. In \bibinfo{booktitle}{\emph{Advances in
+  Neural Information Processing Systems (NeurIPS)}}.
+\newblock
+
+
+\end{thebibliography}

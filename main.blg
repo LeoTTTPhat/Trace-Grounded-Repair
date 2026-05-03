@@ -1,0 +1,94 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: ACM-Reference-Format.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: ref.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty publisher in cadar2008klee
+Warning--empty address in cadar2008klee
+Warning--empty publisher in chandra2011angelic
+Warning--empty address in chandra2011angelic
+Warning--empty publisher in chen2023selfdebug
+Warning--empty address in chen2023selfdebug
+Warning--page numbers missing in both pages and numpages fields in chen2023selfdebug
+Warning--empty publisher in eghbali2022dynapyt
+Warning--empty address in eghbali2022dynapyt
+Warning--can't use both volume and number fields in legoues2012genprog
+Warning--empty publisher in legoues2012genprog
+Warning--empty address in legoues2012genprog
+Warning--empty publisher in jimenez2024swebench
+Warning--empty address in jimenez2024swebench
+Warning--page numbers missing in both pages and numpages fields in jimenez2024swebench
+Warning--no number and no volume in just2014defects4j
+Warning--empty publisher in liu2020efficacy
+Warning--empty address in liu2020efficacy
+Warning--empty publisher in nie2023crossfile
+Warning--empty address in nie2023crossfile
+Warning--page numbers missing in both pages and numpages fields in nie2023crossfile
+Warning--empty publisher in shinn2023reflexion
+Warning--empty address in shinn2023reflexion
+Warning--page numbers missing in both pages and numpages fields in shinn2023reflexion
+Warning--empty publisher in wei2023copiloting
+Warning--empty address in wei2023copiloting
+Warning--page numbers missing in both pages and numpages fields in wei2023copiloting
+Warning--empty publisher in widyasari2020bugsinpy
+Warning--empty address in widyasari2020bugsinpy
+Warning--empty publisher in xia2024agentless
+Warning--empty address in xia2024agentless
+Warning--page numbers missing in both pages and numpages fields in xia2024agentless
+Warning--empty publisher in xia2023plastic
+Warning--empty address in xia2023plastic
+Warning--page numbers missing in both pages and numpages fields in xia2023plastic
+Warning--empty publisher in yang2024sweagent
+Warning--empty address in yang2024sweagent
+Warning--page numbers missing in both pages and numpages fields in yang2024sweagent
+You've used 17 entries,
+            6273 wiz_defined-function locations,
+            1604 strings with 22382 characters,
+and the built_in function-call counts, 21018 in all, are:
+= -- 2243
+> -- 871
+< -- 0
++ -- 305
+- -- 292
+* -- 1614
+:= -- 2090
+add.period$ -- 79
+call.type$ -- 17
+change.case$ -- 160
+chr.to.int$ -- 17
+cite$ -- 55
+duplicate$ -- 1904
+empty$ -- 1334
+format.name$ -- 360
+if$ -- 4981
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 82
+newline$ -- 165
+num.names$ -- 119
+pop$ -- 936
+preamble$ -- 1
+purify$ -- 296
+quote$ -- 0
+skip$ -- 683
+stack$ -- 0
+substring$ -- 1322
+swap$ -- 153
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 468
+warning$ -- 38
+while$ -- 86
+width$ -- 0
+write$ -- 344
+(There were 38 warnings)
